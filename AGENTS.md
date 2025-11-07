@@ -6,7 +6,7 @@ This file contains instructions for agentic coding assistants working on this re
 - Language: TypeScript
 - Frontend Framework: To be determined (React, Vue, Svelte, etc.)
 - Build Tool: To be determined (Vite, Webpack, etc.)
-- Testing Framework: To be determined (Jest, Vitest, etc.)
+- Testing Framework: Vitest
 
 ## Code Style Guidelines
 - Use descriptive variable and function names
@@ -33,8 +33,9 @@ This file contains instructions for agentic coding assistants working on this re
 - Write unit tests for individual functions
 - Test edge cases and error conditions
 - Use descriptive test names that explain what is being tested
-- Run single test: `npm test path/to/test-file.ts` (to be configured)
-- Run all tests: `npm test` (to be configured)
+- Run single test: `npm run test path/to/test-file.ts` (to be configured)
+- Run all tests: `npm run test` (to be configured)
+- Run tests in watch mode: `npm run test:watch` (to be configured)
 
 ## Imports and Dependencies
 - Group imports logically (standard library, third-party, local)
