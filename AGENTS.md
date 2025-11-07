@@ -4,7 +4,7 @@ This file contains instructions for agentic coding assistants working on this re
 
 ## Technology Stack
 - Language: TypeScript
-- Frontend Framework: To be determined (React, Vue, Svelte, etc.)
+- Frontend Framework: HTMX
 - Build Tool: To be determined (Vite, Webpack, etc.)
 - Testing Framework: Vitest
 
