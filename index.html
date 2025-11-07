@@ -35,6 +35,20 @@
         .timer-display.paused {
             color: #ffa500;
         }
+
+        .timer-display.reset {
+            animation: resetPulse 0.5s ease-in-out;
+        }
+
+        @keyframes resetPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+                color: #28a745;
+            }
+        }
         
         .controls {
             margin: 1rem 0;
@@ -148,12 +162,26 @@
             minutesInput.disabled = false;
             secondsInput.disabled = false;
             display.classList.remove('paused');
+            
+            // Visual feedback
+            display.classList.add('reset');
+            setTimeout(() => {
+                display.classList.remove('reset');
+            }, 500);
         });
         
-        // Update display every second when timer is running
+        // Update display every second when timer is running or just stopped
+        let wasRunning = false;
         setInterval(() => {
-            if (timer.isTimerRunning()) {
+            const isRunning = timer.isTimerRunning();
+            
+            if (isRunning) {
                 updateDisplay(timer.getRemainingTime());
+                wasRunning = true;
+            } else if (wasRunning) {
+                // Timer just stopped - update display one final time to show 00:00
+                updateDisplay(timer.getRemainingTime());
+                wasRunning = false;
             }
         }, 1000);
     </script>

@@ -80,6 +80,62 @@ describe('Timer', () => {
       expect(timer.getRemainingTime()).toBe(10);
       expect(timer.isTimerRunning()).toBe(false);
     });
+
+    it('should reset the timer from paused state', () => {
+      timer.start(15);
+      vi.advanceTimersByTime(5000); // 5 seconds passed
+      timer.pause();
+      
+      expect(timer.getRemainingTime()).toBe(10);
+      expect(timer.isPaused()).toBe(true);
+
+      timer.reset();
+      expect(timer.getRemainingTime()).toBe(15);
+      expect(timer.isTimerRunning()).toBe(false);
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should reset all timer state when called', () => {
+      timer.start(20);
+      vi.advanceTimersByTime(8000); // 8 seconds passed
+      
+      timer.reset();
+      
+      expect(timer.getRemainingTime()).toBe(20);
+      expect(timer.isTimerRunning()).toBe(false);
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should be callable when timer has not been started', () => {
+      timer.reset();
+      expect(timer.getRemainingTime()).toBe(0);
+      expect(timer.isTimerRunning()).toBe(false);
+    });
+
+    it('should reset when timer reaches zero', () => {
+      timer.start(2);
+      vi.advanceTimersByTime(2000); // Timer completes
+      
+      expect(timer.getRemainingTime()).toBe(0);
+      expect(timer.isTimerRunning()).toBe(false);
+
+      timer.reset();
+      expect(timer.getRemainingTime()).toBe(2);
+      expect(timer.isTimerRunning()).toBe(false);
+    });
+
+    it('should stop the countdown after reset', () => {
+      timer.start(10);
+      vi.advanceTimersByTime(3000); // 3 seconds
+      
+      timer.reset();
+      expect(timer.getRemainingTime()).toBe(10);
+      
+      // Time should not advance after reset
+      vi.advanceTimersByTime(2000);
+      expect(timer.getRemainingTime()).toBe(10);
+      expect(timer.isTimerRunning()).toBe(false);
+    });
   });
 
   describe('getRemainingTime', () => {
