@@ -5,7 +5,7 @@ export class Timer {
   private duration: number = 0; // Duration in seconds
   private remainingTime: number = 0; // Remaining time in seconds
   private isRunning: boolean = false;
-  private intervalId: number | null = null;
+  private intervalId: any = null; // Use 'any' type to work in both browser and test environments
 
   /**
    * Start the timer with a specific duration
@@ -22,11 +22,11 @@ export class Timer {
     
     // Clear any existing interval
     if (this.intervalId) {
-      clearInterval(this.intervalId);
+      this.clearInterval(this.intervalId);
     }
     
     // Start the countdown
-    this.intervalId = window.setInterval(() => {
+    this.intervalId = this.setInterval(() => {
       this.tick();
     }, 1000);
   }
@@ -36,7 +36,7 @@ export class Timer {
    */
   stop(): void {
     if (this.intervalId) {
-      clearInterval(this.intervalId);
+      this.clearInterval(this.intervalId);
       this.intervalId = null;
     }
     this.isRunning = false;
@@ -77,6 +77,33 @@ export class Timer {
     // If timer reaches zero, stop it
     if (this.remainingTime <= 0) {
       this.stop();
+    }
+  }
+
+  /**
+   * Set interval with environment check
+   * @param callback - Function to call at specified interval
+   * @param delay - Interval delay in milliseconds
+   * @returns Interval ID
+   */
+  private setInterval(callback: () => void, delay: number): any {
+    if (typeof window !== 'undefined' && window.setInterval) {
+      return window.setInterval(callback, delay);
+    } else {
+      // Fallback for test environment
+      return setInterval(callback, delay);
+    }
+  }
+
+  /**
+   * Clear interval with environment check
+   * @param intervalId - ID of the interval to clear
+   */
+  private clearInterval(intervalId: any): void {
+    if (typeof window !== 'undefined' && window.clearInterval) {
+      window.clearInterval(intervalId);
+    } else {
+      clearInterval(intervalId);
     }
   }
 }
