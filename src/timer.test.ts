@@ -46,7 +46,36 @@ describe('Timer', () => {
 
       // Advance timer by 1 second
       vi.advanceTimersByTime(1000);
-      expect(timer.getRemainingTime()).toBe(0);
+      // Timer should auto-reset to initial duration
+      expect(timer.getRemainingTime()).toBe(1);
+      expect(timer.isTimerRunning()).toBe(false);
+    });
+
+    it('should automatically reset to initial duration when reaching zero', () => {
+      timer.start(3);
+      expect(timer.getRemainingTime()).toBe(3);
+      expect(timer.isTimerRunning()).toBe(true);
+
+      // Advance timer to completion
+      vi.advanceTimersByTime(3000);
+      
+      // Timer should automatically reset to initial duration
+      expect(timer.getRemainingTime()).toBe(3);
+      expect(timer.isTimerRunning()).toBe(false);
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should reset to initial duration even after multiple countdowns', () => {
+      // First countdown
+      timer.start(5);
+      vi.advanceTimersByTime(5000);
+      expect(timer.getRemainingTime()).toBe(5);
+      expect(timer.isTimerRunning()).toBe(false);
+
+      // Second countdown - start again
+      timer.start(5);
+      vi.advanceTimersByTime(5000);
+      expect(timer.getRemainingTime()).toBe(5);
       expect(timer.isTimerRunning()).toBe(false);
     });
   });
@@ -116,9 +145,11 @@ describe('Timer', () => {
       timer.start(2);
       vi.advanceTimersByTime(2000); // Timer completes
       
-      expect(timer.getRemainingTime()).toBe(0);
+      // Timer should auto-reset to initial duration
+      expect(timer.getRemainingTime()).toBe(2);
       expect(timer.isTimerRunning()).toBe(false);
 
+      // Manual reset should still work
       timer.reset();
       expect(timer.getRemainingTime()).toBe(2);
       expect(timer.isTimerRunning()).toBe(false);

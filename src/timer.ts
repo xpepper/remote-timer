@@ -118,9 +118,10 @@ export class Timer {
       this.remainingTime--;
     }
     
-    // If timer reaches zero, stop it
+    // If timer reaches zero, stop it and reset to initial duration
     if (this.remainingTime <= 0) {
       this.stop();
+      this.remainingTime = this.duration;
     }
   }
 

@@ -179,9 +179,23 @@
                 updateDisplay(timer.getRemainingTime());
                 wasRunning = true;
             } else if (wasRunning) {
-                // Timer just stopped - update display one final time to show 00:00
+                // Timer just stopped - update display one final time and reset UI
                 updateDisplay(timer.getRemainingTime());
                 wasRunning = false;
+                
+                // Reset UI to initial state
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = 'Pause';
+                minutesInput.disabled = false;
+                secondsInput.disabled = false;
+                display.classList.remove('paused');
+                
+                // Visual feedback for completion
+                display.classList.add('reset');
+                setTimeout(() => {
+                    display.classList.remove('reset');
+                }, 500);
             }
         }, 1000);
     </script>
