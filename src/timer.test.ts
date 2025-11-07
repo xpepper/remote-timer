@@ -106,4 +106,121 @@ describe('Timer', () => {
       expect(timer.isTimerRunning()).toBe(false);
     });
   });
+
+  describe('pause', () => {
+    it('should pause the timer', () => {
+      timer.start(10);
+      expect(timer.isTimerRunning()).toBe(true);
+      expect(timer.isPaused()).toBe(false);
+
+      timer.pause();
+      expect(timer.isTimerRunning()).toBe(false);
+      expect(timer.isPaused()).toBe(true);
+    });
+
+    it('should preserve remaining time when paused', () => {
+      timer.start(10);
+      vi.advanceTimersByTime(3000); // 3 seconds passed
+      expect(timer.getRemainingTime()).toBe(7);
+
+      timer.pause();
+      expect(timer.getRemainingTime()).toBe(7);
+
+      // Time should not advance when paused
+      vi.advanceTimersByTime(2000);
+      expect(timer.getRemainingTime()).toBe(7);
+    });
+
+    it('should do nothing if timer is not running', () => {
+      timer.pause();
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should do nothing if timer is already paused', () => {
+      timer.start(10);
+      timer.pause();
+      expect(timer.isPaused()).toBe(true);
+
+      timer.pause(); // Try to pause again
+      expect(timer.isPaused()).toBe(true);
+    });
+  });
+
+  describe('resume', () => {
+    it('should resume the timer from paused state', () => {
+      timer.start(10);
+      vi.advanceTimersByTime(2000); // 2 seconds
+      timer.pause();
+      
+      expect(timer.getRemainingTime()).toBe(8);
+      expect(timer.isPaused()).toBe(true);
+
+      timer.resume();
+      expect(timer.isTimerRunning()).toBe(true);
+      expect(timer.isPaused()).toBe(false);
+
+      // Timer should continue counting down
+      vi.advanceTimersByTime(1000);
+      expect(timer.getRemainingTime()).toBe(7);
+    });
+
+    it('should do nothing if timer is not paused', () => {
+      timer.start(10);
+      expect(timer.isTimerRunning()).toBe(true);
+
+      timer.resume(); // Try to resume when already running
+      expect(timer.isTimerRunning()).toBe(true);
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should allow multiple pause and resume cycles', () => {
+      timer.start(10);
+      
+      vi.advanceTimersByTime(2000); // 2 seconds: 8 remaining
+      timer.pause();
+      expect(timer.getRemainingTime()).toBe(8);
+      
+      timer.resume();
+      vi.advanceTimersByTime(3000); // 3 seconds: 5 remaining
+      expect(timer.getRemainingTime()).toBe(5);
+      
+      timer.pause();
+      timer.resume();
+      vi.advanceTimersByTime(2000); // 2 seconds: 3 remaining
+      expect(timer.getRemainingTime()).toBe(3);
+    });
+  });
+
+  describe('isPaused', () => {
+    it('should return false when timer is not paused', () => {
+      expect(timer.isPaused()).toBe(false);
+      
+      timer.start(10);
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should return true when timer is paused', () => {
+      timer.start(10);
+      timer.pause();
+      expect(timer.isPaused()).toBe(true);
+    });
+
+    it('should return false after resuming', () => {
+      timer.start(10);
+      timer.pause();
+      expect(timer.isPaused()).toBe(true);
+      
+      timer.resume();
+      expect(timer.isPaused()).toBe(false);
+    });
+
+    it('should return false after stopping', () => {
+      timer.start(10);
+      timer.pause();
+      expect(timer.isPaused()).toBe(true);
+      
+      timer.stop();
+      expect(timer.isPaused()).toBe(false);
+    });
+  });
 });

@@ -5,6 +5,7 @@ export class Timer {
   private duration: number = 0; // Duration in seconds
   private remainingTime: number = 0; // Remaining time in seconds
   private isRunning: boolean = false;
+  private isPausedState: boolean = false;
   private intervalId: any = null; // Use 'any' type to work in both browser and test environments
 
   /**
@@ -19,6 +20,7 @@ export class Timer {
     this.duration = duration;
     this.remainingTime = duration;
     this.isRunning = true;
+    this.isPausedState = false;
     
     // Clear any existing interval
     if (this.intervalId) {
@@ -40,6 +42,40 @@ export class Timer {
       this.intervalId = null;
     }
     this.isRunning = false;
+    this.isPausedState = false;
+  }
+
+  /**
+   * Pause the timer
+   */
+  pause(): void {
+    if (!this.isRunning || this.isPausedState) {
+      return;
+    }
+
+    if (this.intervalId) {
+      this.clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    this.isRunning = false;
+    this.isPausedState = true;
+  }
+
+  /**
+   * Resume the timer from paused state
+   */
+  resume(): void {
+    if (!this.isPausedState) {
+      return;
+    }
+
+    this.isRunning = true;
+    this.isPausedState = false;
+
+    // Start the countdown again
+    this.intervalId = this.setInterval(() => {
+      this.tick();
+    }, 1000);
   }
 
   /**
@@ -64,6 +100,14 @@ export class Timer {
    */
   isTimerRunning(): boolean {
     return this.isRunning;
+  }
+
+  /**
+   * Check if the timer is paused
+   * @returns True if the timer is paused, false otherwise
+   */
+  isPaused(): boolean {
+    return this.isPausedState;
   }
 
   /**
