@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Team Timer</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        
+        .timer-container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            min-width: 300px;
+        }
+        
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: #333;
+        }
+        
+        .controls {
+            margin: 1rem 0;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .input-group {
+            margin: 1rem 0;
+        }
+        
+        input {
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <h1>Remote Team Timer</h1>
+        <div class="timer-display" id="timer-display">25:00</div>
+        <div class="input-group">
+            <label for="minutes">Minutes:</label>
+            <input type="number" id="minutes" value="25" min="1" max="60">
+            <label for="seconds">Seconds:</label>
+            <input type="number" id="seconds" value="0" min="0" max="59">
+        </div>
+        <div class="controls">
+            <button id="start-btn">Start</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Timer } from './timer.ts';
+        
+        const timer = new Timer();
+        const display = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
+        
+        // Update the display with formatted time
+        function updateDisplay(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Start button event
+        startBtn.addEventListener('click', () => {
+            const minutes = parseInt(minutesInput.value) || 0;
+            const seconds = parseInt(secondsInput.value) || 0;
+            const totalSeconds = minutes * 60 + seconds;
+            
+            if (totalSeconds > 0) {
+                timer.start(totalSeconds);
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                minutesInput.disabled = true;
+                secondsInput.disabled = true;
+            }
+        });
+        
+        // Pause button event
+        pauseBtn.addEventListener('click', () => {
+            timer.stop();
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        });
+        
+        // Reset button event
+        resetBtn.addEventListener('click', () => {
+            timer.reset();
+            updateDisplay(timer.getRemainingTime());
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            minutesInput.disabled = false;
+            secondsInput.disabled = false;
+        });
+        
+        // Update display every second when timer is running
+        setInterval(() => {
+            if (timer.isTimerRunning()) {
+                updateDisplay(timer.getRemainingTime());
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

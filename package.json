@@ -1,0 +1,33 @@
+{
+  "name": "remote-timer",
+  "version": "1.0.0",
+  "description": "A shared countdown timer for remote teams",
+  "main": "src/timer.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:run": "vitest run",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.{ts,html}"
+  },
+  "keywords": [
+    "timer",
+    "pomodoro",
+    "remote",
+    "team"
+  ],
+  "author": "Remote Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^4.4.5",
+    "vitest": "^0.34.6",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  }
+}
