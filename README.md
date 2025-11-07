@@ -1,6 +1,6 @@
 # Remote Team Timer
 
-A shared countdown timer for remote teams to improve focus and productivity.
+A sharedd countdown timer for remote teams to improve focus and productivity.
 
 ## Goal
 
